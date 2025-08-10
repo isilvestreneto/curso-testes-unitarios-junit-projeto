@@ -11,9 +11,10 @@ class SaudacaoUtilTest {
 
     @ParameterizedTest
     @CsvSource({
-            "0, Bom dia",
+            "4, Boa noite",
+            "5, Bom dia",
             "12, Boa tarde",
-            "18, Boa noite"
+            "19, Boa noite",
     })
     public void saudar(int hora, String esperado) {
         String saudacao = SaudacaoUtil.saudar(hora);
