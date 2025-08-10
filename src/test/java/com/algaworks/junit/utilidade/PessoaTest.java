@@ -1,5 +1,6 @@
 package com.algaworks.junit.utilidade;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -8,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PessoaTest {
 
     @Test
+    @Disabled("Desabilitado para demonstração")
     void assercaoAgrupada() {
         Pessoa pessoa = new Pessoa("João", "Silva");
         assertAll("Asserções de pessoa",
