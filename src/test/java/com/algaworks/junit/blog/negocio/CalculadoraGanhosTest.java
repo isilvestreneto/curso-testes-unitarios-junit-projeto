@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class CalculadoraGanhosTest {
 
     CalculadoraGanhos calculadora;
@@ -42,20 +43,28 @@ class CalculadoraGanhosTest {
     }
 
     @Test
-    void deveCalcularGanhosComPremium() {
+    void Dado_um_post_e_autor_premium_Quando_calcular_ganhos_Entao_deve_retornar_valor_com_bonus() {
         Ganhos ganhos = calculadora.calcular(post);
         assertEquals(BigDecimal.valueOf(40), ganhos.getTotalGanho());
+    }
+
+    @Test
+    void Dado_um_post_e_autor_Quando_calcular_ganhos_Entao_deve_retornar_quantidade_de_palavras() {
+        Ganhos ganhos = calculadora.calcular(post);
         assertEquals(6, ganhos.getQuantidadePalavras());
+    }
+
+    @Test
+    void Dado_um_post_e_um_autor_Quando_calcular_ganhos_Entao_deve_retornar_valor_pago_por_palavra_do_autor() {
+        Ganhos ganhos = calculadora.calcular(post);
         assertEquals(autor.getValorPagoPorPalavra(), ganhos.getValorPagoPorPalavra());
     }
 
     @Test
-    void deveCalcularGanhosSemPremium() {
+    void Dado_um_post_e_um_autor_nao_premium_Quando_calcular_ganhos_Entao_deve_retornar_valor_sem_bonus() {
         autor.setPremium(false);
         Ganhos ganhos = calculadora.calcular(post);
         assertEquals(BigDecimal.valueOf(30), ganhos.getTotalGanho());
-        assertEquals(6, ganhos.getQuantidadePalavras());
-        assertEquals(autor.getValorPagoPorPalavra(), ganhos.getValorPagoPorPalavra());
     }
 
 }
