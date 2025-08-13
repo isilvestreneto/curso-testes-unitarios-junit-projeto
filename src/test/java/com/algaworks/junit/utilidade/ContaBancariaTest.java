@@ -1,5 +1,6 @@
 package com.algaworks.junit.utilidade;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -19,74 +20,79 @@ class ContaBancariaTest {
         assertEquals("Saldo não pode ser nulo", illegalArgumentException.getMessage());
     }
 
+    @Nested
+    class Saque {
+        @ParameterizedTest
+        @CsvSource({
+                "0",
+                "-100"
+        })
+        void deveLancarIllegalArgumentExceptionSeValorDeSaqueMenorIgualAZero(BigDecimal valor) {
+            ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.ZERO);
+            IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
+                contaBancaria.saque(valor);
+            });
+            assertEquals("Valor não pode ser nulo", illegalArgumentException.getMessage());
 
-    @ParameterizedTest
-    @CsvSource({
-            "0",
-            "-100"
-    })
-    void deveLancarIllegalArgumentExceptionSeValorDeSaqueMenorIgualAZero(BigDecimal valor) {
-        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.ZERO);
-        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            contaBancaria.saque(valor);
-        });
-        assertEquals("Valor não pode ser nulo", illegalArgumentException.getMessage());
+        }
 
+        @Test
+        void deveLancarIllegalArgumentExceptionSeValorDeSaqueForNulo() {
+            ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.ZERO);
+            IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
+                contaBancaria.saque(null);
+            });
+            assertEquals("Valor não pode ser nulo", illegalArgumentException.getMessage());
+        }
+
+        @Test
+        void saqueComSaldoInsuficienteDeveLancarRuntimeException() {
+            ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.ZERO);
+            RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> {
+                contaBancaria.saque(BigDecimal.valueOf(10));
+            });
+            assertEquals("Saldo insuficiente", runtimeException.getMessage());
+        }
+
+        @Test
+        void saqueComSucesso() {
+            ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.valueOf(100));
+            contaBancaria.saque(BigDecimal.valueOf(50));
+            assertEquals(BigDecimal.valueOf(50), contaBancaria.saldo());
+        }
     }
 
-    @Test
-    void deveLancarIllegalArgumentExceptionSeValorDeSaqueForNulo() {
-        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.ZERO);
-        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            contaBancaria.saque(null);
-        });
-        assertEquals("Valor não pode ser nulo", illegalArgumentException.getMessage());
-    }
+    @Nested
+    class Deposito {
+        @Test
+        void depositoComValorNuloDeveLancarExcecao() {
+            ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.valueOf(100));
+            IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
+                contaBancaria.deposito(null);
+            });
+            assertEquals("Valor não pode ser nulo", illegalArgumentException.getMessage());
+        }
 
-    @Test
-    void saqueComSaldoInsuficienteDeveLancarRuntimeException() {
-        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.ZERO);
-        RuntimeException runtimeException = assertThrows(RuntimeException.class, () -> {
-            contaBancaria.saque(BigDecimal.valueOf(10));
-        });
-        assertEquals("Saldo insuficiente", runtimeException.getMessage());
-    }
+        @ParameterizedTest
+        @CsvSource({
+                "0",
+                "-100"
+        })
+        void depositoComValorMenorIgualAZeroDeveLancarExcecao(BigDecimal valor) {
+            ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.valueOf(100));
+            IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
+                contaBancaria.deposito(valor);
+            });
+            assertEquals("Valor não pode ser nulo", illegalArgumentException.getMessage());
+        }
 
-    @Test
-    void saqueComSucesso() {
-        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.valueOf(100));
-        contaBancaria.saque(BigDecimal.valueOf(50));
-        assertEquals(BigDecimal.valueOf(50), contaBancaria.getSaldo());
-    }
+        @Test
+        void depositoComSucesso() {
+            ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.valueOf(50));
 
-    @Test
-    void depositoComValorNuloDeveLancarExcecao() {
-        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.valueOf(100));
-        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            contaBancaria.deposito(null);
-        });
-        assertEquals("Valor não pode ser nulo", illegalArgumentException.getMessage());
-    }
+            contaBancaria.deposito(BigDecimal.valueOf(50));
 
-    @ParameterizedTest
-    @CsvSource({
-            "0",
-            "-100"
-    })
-    void depositoComValorMenorIgualAZeroDeveLancarExcecao(BigDecimal valor) {
-        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.valueOf(100));
-        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            contaBancaria.deposito(valor);
-        });
-        assertEquals("Valor não pode ser nulo", illegalArgumentException.getMessage());
-    }
-
-    @Test
-    void depositoComSucesso() {
-        ContaBancaria contaBancaria = new ContaBancaria(BigDecimal.valueOf(50));
-
-        contaBancaria.deposito(BigDecimal.valueOf(50));
-
-        assertEquals(BigDecimal.valueOf(100), contaBancaria.saldo());
+            assertEquals(BigDecimal.valueOf(100), contaBancaria.saldo());
+        }
     }
 }
