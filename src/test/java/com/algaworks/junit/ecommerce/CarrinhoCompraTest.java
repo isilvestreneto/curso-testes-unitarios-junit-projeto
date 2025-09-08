@@ -15,6 +15,9 @@ class CarrinhoCompraTest {
 
     CarrinhoCompra carrinhoCompra;
     Cliente cliente;
+    Produto produto;
+    ArrayList<ItemCarrinhoCompra> itens;
+    ItemCarrinhoCompra itemCarrinhoCompra;
 
     @BeforeEach
     void setUp() {
@@ -75,9 +78,7 @@ class CarrinhoCompraTest {
     @Nested
     @DisplayName("Cenarios Remover Produto")
     class RemoverProduto {
-        Produto produto;
-        ArrayList<ItemCarrinhoCompra> itens;
-        ItemCarrinhoCompra itemCarrinhoCompra;
+
         @BeforeEach
         void setUp() {
             produto = new Produto(1L, "Boneca", "Um brinquedo infantil", BigDecimal.ONE);
@@ -90,7 +91,7 @@ class CarrinhoCompraTest {
         @Test
         @DisplayName("Deve lançar exceção quando produto informado é nulo")
         void deveLancarExcecaoQuandoProdutoInformadoNulo() {
-            assertThrows(IllegalArgumentException.class, () -> carrinhoCompra.removerProduto(null));
+            assertThrows(NullPointerException.class, () -> carrinhoCompra.removerProduto(null));
         }
 
         @Test
@@ -104,6 +105,147 @@ class CarrinhoCompraTest {
         @DisplayName("Deve remover produto do carrinho")
         void deveRemoverProdutoDoCarrinho() {
             carrinhoCompra.removerProduto(produto);
+            assertEquals(0, carrinhoCompra.getItens().size());
+        }
+    }
+
+    @Nested
+    @DisplayName("Cenarios Aumentar Quantidade Produto")
+    class AumentarQuantidadeProduto {
+
+        ArrayList<ItemCarrinhoCompra> itens;
+        ItemCarrinhoCompra itemCarrinhoCompra;
+
+        @BeforeEach
+        void setUp() {
+            produto = new Produto(1L, "Boneca", "Um brinquedo infantil", BigDecimal.ONE);
+            itens = new ArrayList<>();
+            itemCarrinhoCompra = new ItemCarrinhoCompra(produto, 1);
+            itens.add(itemCarrinhoCompra);
+            carrinhoCompra = new CarrinhoCompra(cliente, itens);
+        }
+
+        @Test
+        @DisplayName("parâmetro não pode ser nulo, deve retornar uma exception")
+        void quandoParametroForNuloDeveRetornarUmaException() {
+            assertThrows(NullPointerException.class, () -> carrinhoCompra.aumentarQuantidadeProduto((Produto) null));
+        }
+
+        @Test
+        @DisplayName("caso o produto não exista, deve retornar uma exception")
+        void casoProdutoNaoExistaDeveRetornarException() {
+            Produto produtoNaoExistente = new Produto(2L, "Carrinho", "Um brinquedo infantil", BigDecimal.ONE);
+            assertThrows(IllegalArgumentException.class, () -> carrinhoCompra.aumentarQuantidadeProduto(produtoNaoExistente));
+        }
+
+        @Test
+        @DisplayName("deve aumentar em um quantidade do produto")
+        void deveAumentarAQuantidadeDoProduto() {
+            carrinhoCompra.aumentarQuantidadeProduto(produto);
+            assertEquals(2, itemCarrinhoCompra.getQuantidade());
+        }
+    }
+
+    @Nested
+    @DisplayName("Cenarios Diminuir Quantidade Produto")
+    class DiminuirQuantidadeProduto {
+
+        ArrayList<ItemCarrinhoCompra> itens;
+        ItemCarrinhoCompra itemCarrinhoCompra;
+
+        @BeforeEach
+        void setUp() {
+            produto = new Produto(1L, "Boneca", "Um brinquedo infantil", BigDecimal.ONE);
+            itens = new ArrayList<>();
+            itemCarrinhoCompra = new ItemCarrinhoCompra(produto, 1);
+            itens.add(itemCarrinhoCompra);
+            carrinhoCompra = new CarrinhoCompra(cliente, itens);
+        }
+
+        @Test
+        @DisplayName("parâmetro não pode ser nulo, deve retornar uma exception")
+        void quandoParametroForNuloDeveLancarException() {
+            assertThrows(NullPointerException.class, () -> carrinhoCompra.diminuirQuantidadeProduto(null));
+        }
+
+        @Test
+        @DisplayName("caso o produto não exista, deve retornar uma exception")
+        void quandoProdutoNaoExistirNaBaseDeveRetornarException() {
+            Produto produtoNaoExistente = new Produto(2L, "Carrinho", "Um brinquedo infantil", BigDecimal.ONE);
+            assertThrows(IllegalArgumentException.class, () -> carrinhoCompra.diminuirQuantidadeProduto(produtoNaoExistente));
+        }
+
+        @Test
+        @DisplayName("caso o produto não exista, deve retornar uma exception")
+        void deveDeduzirItem() {
+            carrinhoCompra.diminuirQuantidadeProduto(produto);
+            assertEquals(0, itemCarrinhoCompra.getQuantidade());
+        }
+    }
+
+    @Nested
+    @DisplayName("Get Valor Total")
+    class GetValorTotal {
+        ArrayList<ItemCarrinhoCompra> itens;
+        ItemCarrinhoCompra itemCarrinhoCompra;
+
+        @BeforeEach
+        void setUp() {
+            produto = new Produto(1L, "Boneca", "Um brinquedo infantil", BigDecimal.ONE);
+            itens = new ArrayList<>();
+            itemCarrinhoCompra = new ItemCarrinhoCompra(produto, 10);
+            itens.add(itemCarrinhoCompra);
+            carrinhoCompra = new CarrinhoCompra(cliente, itens);
+        }
+
+        @Test
+        @DisplayName("Deve retornar o valor total das compras")
+        void deveRetornarValorTotalDasCompras() {
+            assertEquals(BigDecimal.TEN, carrinhoCompra.getValorTotal());
+        }
+    }
+
+    @Nested
+    @DisplayName("Get Qtd Total")
+    class GetQtdTotal {
+        ArrayList<ItemCarrinhoCompra> itens;
+        ItemCarrinhoCompra itemCarrinhoCompra;
+
+        @BeforeEach
+        void setUp() {
+            produto = new Produto(1L, "Boneca", "Um brinquedo infantil", BigDecimal.ONE);
+            itens = new ArrayList<>();
+            itemCarrinhoCompra = new ItemCarrinhoCompra(produto, 10);
+            itens.add(itemCarrinhoCompra);
+            carrinhoCompra = new CarrinhoCompra(cliente, itens);
+        }
+
+        @Test
+        @DisplayName("Deve retornar a qtde total de itens da compra")
+        void deveRetornarValorTotalDasCompras() {
+            assertEquals(10, carrinhoCompra.getQuantidadeTotalDeProdutos());
+        }
+    }
+
+    @Nested
+    @DisplayName("Esvaziar")
+    class Esvaziar {
+        ArrayList<ItemCarrinhoCompra> itens;
+        ItemCarrinhoCompra itemCarrinhoCompra;
+
+        @BeforeEach
+        void setUp() {
+            produto = new Produto(1L, "Boneca", "Um brinquedo infantil", BigDecimal.ONE);
+            itens = new ArrayList<>();
+            itemCarrinhoCompra = new ItemCarrinhoCompra(produto, 10);
+            itens.add(itemCarrinhoCompra);
+            carrinhoCompra = new CarrinhoCompra(cliente, itens);
+        }
+
+        @Test
+        @DisplayName("Deve esvaziar")
+        void deveEsvaziar() {
+            carrinhoCompra.esvaziar();
             assertEquals(0, carrinhoCompra.getItens().size());
         }
     }

@@ -41,7 +41,7 @@ public class ItemCarrinhoCompra {
         if (quantidade <= 0) {
             throw new IllegalArgumentException();
         }
-        if (quantidade >= this.quantidade) {
+        if (quantidade > this.quantidade) {
             throw new IllegalArgumentException();
         }
         this.quantidade -= quantidade;
