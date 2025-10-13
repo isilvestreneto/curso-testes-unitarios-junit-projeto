@@ -5,6 +5,15 @@ public class Mensagem {
     private String assunto;
     private String conteudo;
 
+    @Override
+    public String toString() {
+        return "Mensagem{" +
+                "destinatario='" + destinatario + '\'' +
+                ", assunto='" + assunto + '\'' +
+                ", conteudo='" + conteudo + '\'' +
+                '}';
+    }
+
     public Mensagem(String destinatario, String assunto, String conteudo) {
         this.destinatario = destinatario;
         this.assunto = assunto;

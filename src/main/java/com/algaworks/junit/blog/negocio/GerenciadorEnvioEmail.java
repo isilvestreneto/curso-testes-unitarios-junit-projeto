@@ -4,7 +4,7 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
-public class GerenciadorEnvioEmail {
+public abstract class GerenciadorEnvioEmail {
 
     void enviarEmail(Mensagem mensagem) {
         try {
@@ -22,4 +22,5 @@ public class GerenciadorEnvioEmail {
             throw new RuntimeException(e);
         }
     }
+
 }
