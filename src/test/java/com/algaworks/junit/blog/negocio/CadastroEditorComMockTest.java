@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
@@ -48,5 +49,11 @@ class CadastroEditorComMockTest {
         Editor resultado = cadastroEditor.criar(editor);
         long esperado = 1L;
         assertEquals(esperado, resultado.getId());
+    }
+
+    @Test
+    void dado_um_editor_valido_quando_criar_entao_deve_chamar_metodo_salvar_do_armazenamento() {
+        cadastroEditor.criar(editor);
+        Mockito.verify(armazenamentoEditor, Mockito.times(1)).salvar(eq(editor));
     }
 }
