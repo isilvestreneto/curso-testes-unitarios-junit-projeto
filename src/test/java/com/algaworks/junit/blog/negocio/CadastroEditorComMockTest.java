@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
@@ -34,14 +35,12 @@ class CadastroEditorComMockTest {
     @BeforeEach
     void setUp() {
         editor = new Editor(null, "Ivan", "ivan@email.com", BigDecimal.valueOf(30), true);
-        Mockito.when(armazenamentoEditor.salvar(editor))
+        Mockito.when(armazenamentoEditor.salvar(any(Editor.class)))
                 .thenAnswer(invocacao -> {
                     Editor editorPassado = invocacao.getArgument(0, Editor.class);
                     editorPassado.setId(1L);
                     return editorPassado;
                 });
-        //.thenReturn(new Editor(1L, "Ivan", "ivan@email.com",
-        //      BigDecimal.valueOf(30), true));
     }
 
     @Test
