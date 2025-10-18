@@ -1,6 +1,7 @@
 package com.algaworks.junit.blog.negocio;
 
 import com.algaworks.junit.blog.armazenamento.ArmazenamentoEditor;
+import com.algaworks.junit.blog.exception.RegraNegocioException;
 import com.algaworks.junit.blog.modelo.Editor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -11,6 +12,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,5 +85,15 @@ class CadastroEditorComMockTest {
         Editor editorSpy = spy(editor);
         cadastroEditor.criar(editorSpy);
         verify(editorSpy, atLeast(1)).getEmail();
+    }
+
+    @Test
+    void Dado_um_editor_com_email_existente_Deve_lancar_exception() {
+        when(armazenamentoEditor.encontrarPorEmail("ivan@email.com"))
+                .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(editor));
+        Editor editorComMesmoEmail = new Editor(null, "Ivan", "ivan@email.com", BigDecimal.valueOf(30), true);
+        cadastroEditor.criar(editor);
+        assertThrows(RegraNegocioException.class, () -> cadastroEditor.criar(editorComMesmoEmail));
     }
 }
