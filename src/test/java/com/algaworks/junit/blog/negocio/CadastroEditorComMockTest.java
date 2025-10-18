@@ -61,7 +61,10 @@ class CadastroEditorComMockTest {
     @Test
     void dado_um_editor_valido_Quando_criar_e_lancar_exception_ao_salvar_Entao_nao_deve_enviar_email() {
         when(armazenamentoEditor.salvar(editor)).thenThrow(new RuntimeException());
-        assertThrows(RuntimeException.class, () -> cadastroEditor.criar(editor));
-        verify(gerenciadorEnvioEmail, never()).enviarEmail(any());
+
+        assertAll("Nao deve enviar email, quando lancar exception no armazenamento",
+                () -> assertThrows(RuntimeException.class, () -> cadastroEditor.criar(editor)),
+                () -> verify(gerenciadorEnvioEmail, never()).enviarEmail(any())
+        );
     }
 }
