@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +37,7 @@ class CadastroEditorComMockTest {
     @BeforeEach
     void setUp() {
         editor = new Editor(null, "Ivan", "ivan@email.com", BigDecimal.valueOf(30), true);
-        Mockito.when(armazenamentoEditor.salvar(any(Editor.class)))
+        when(armazenamentoEditor.salvar(any(Editor.class)))
                 .thenAnswer(invocacao -> {
                     Editor editorPassado = invocacao.getArgument(0, Editor.class);
                     editorPassado.setId(1L);
@@ -54,6 +55,13 @@ class CadastroEditorComMockTest {
     @Test
     void dado_um_editor_valido_quando_criar_entao_deve_chamar_metodo_salvar_do_armazenamento() {
         cadastroEditor.criar(editor);
-        Mockito.verify(armazenamentoEditor, Mockito.times(1)).salvar(eq(editor));
+        verify(armazenamentoEditor, Mockito.times(1)).salvar(eq(editor));
+    }
+
+    @Test
+    void dado_um_editor_valido_Quando_criar_e_lancar_exception_ao_salvar_Entao_nao_deve_enviar_email() {
+        when(armazenamentoEditor.salvar(editor)).thenThrow(new RuntimeException());
+        assertThrows(RuntimeException.class, () -> cadastroEditor.criar(editor));
+        verify(gerenciadorEnvioEmail, never()).enviarEmail(any());
     }
 }
