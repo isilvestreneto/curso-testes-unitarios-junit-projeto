@@ -38,7 +38,7 @@ class CadastroEditorComMockTest {
     class CenariosEditorValido {
         @BeforeEach
         void setUp() {
-            editor = new Editor(null, "Ivan", "ivan@email.com", BigDecimal.valueOf(30), true);
+            editor = new Editor(1L, "Ivan", "ivan@email.com", BigDecimal.valueOf(30), true);
         }
 
         @Nested
@@ -129,12 +129,30 @@ class CadastroEditorComMockTest {
             }
 
             @Test
-            void Dado_um_editor_valido_Quando_editar_E_existir_editor_usando_mesmo_email_Deve_lancar_exception() {
-                when(armazenamentoEditor.encontrarPorEmailComIdDiferenteDe(anyString(), anyLong())).thenAnswer(Answers.RETURNS_DEEP_STUBS);
-                assertAll(
-                        () -> assertThrows(RegraNegocioException.class, () -> cadastroEditor.editar(editor)),
-                        () -> verify(gerenciadorEnvioEmail, never()).enviarEmail(any())
-                );
+            void Quando_editar_editor_usar_email_ja_cadastro_em_outro_id_Deve_lancar_exception() {
+                when(armazenamentoEditor.encontrarPorEmailComIdDiferenteDe(anyString(), anyLong()))
+                        .thenReturn(Optional.of(new Editor(2L, "Outro", "ivan@email.com", BigDecimal.ONE, true)));
+                assertThrows(RegraNegocioException.class, () -> cadastroEditor.editar(editor));
+            }
+
+        }
+
+        @Nested
+        class RemoverEditorValido {
+            @BeforeEach
+            void setUp() {
+            }
+
+            @Test
+            void Quando_id_de_editor_for_nulo_Deve_lancar_Nullponter_Exception() throws Exception {
+                assertThrows(NullPointerException.class, () -> cadastroEditor.remover(null));
+            }
+
+            @Test
+            void Quando_id_de_editor_for_valido_E_existir_editor_na_base_Deve_remover_com_sucesso() throws Exception {
+                when(armazenamentoEditor.encontrarPorId(editor.getId())).thenReturn(Optional.of(editor));
+                cadastroEditor.remover(editor.getId());
+                verify(armazenamentoEditor, times(1)).remover(any(Long.class));
             }
         }
     }

@@ -1,12 +1,10 @@
 package com.algaworks.junit.blog.negocio;
 
-import com.algaworks.junit.blog.armazenamento.ArmazenamentoEditor;
 import com.algaworks.junit.blog.modelo.Editor;
+import com.algaworks.junit.mocks.ArmazenamentoEditorFixoEmMemoriaMock;
 import org.junit.jupiter.api.*;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,7 +17,7 @@ class CadastroEditorComStubTest {
 
     @BeforeAll
     static void setUpAll() {
-        cadastroEditor = new CadastroEditor(new ArmazenamentoEditorFixoEmMemoria(), new GerenciadorEnvioEmail() {
+        cadastroEditor = new CadastroEditor(new ArmazenamentoEditorFixoEmMemoriaMock(), new GerenciadorEnvioEmail() {
             @Override
             void enviarEmail(Mensagem mensagem) {
                 System.out.println("Enviando mensagem:" + mensagem.toString());
@@ -46,35 +44,4 @@ class CadastroEditorComStubTest {
         });
     }
 
-    private static class ArmazenamentoEditorFixoEmMemoria implements ArmazenamentoEditor {
-        @Override
-        public Editor salvar(Editor editor) {
-            return editor;
-        }
-
-        @Override
-        public Optional<Editor> encontrarPorId(Long editor) {
-            return Optional.empty();
-        }
-
-        @Override
-        public Optional<Editor> encontrarPorEmail(String email) {
-            return Optional.empty();
-        }
-
-        @Override
-        public Optional<Editor> encontrarPorEmailComIdDiferenteDe(String email, Long id) {
-            return Optional.empty();
-        }
-
-        @Override
-        public void remover(Long editorId) {
-
-        }
-
-        @Override
-        public List<Editor> encontrarTodos() {
-            return List.of();
-        }
-    }
 }
