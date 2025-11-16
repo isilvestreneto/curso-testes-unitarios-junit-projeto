@@ -123,4 +123,18 @@ public class Post {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", titulo='" + titulo + '\'' +
+                ", conteudo='" + conteudo + '\'' +
+                ", autor=" + autor +
+                ", slug='" + slug + '\'' +
+                ", ganhos=" + ganhos +
+                ", pago=" + pago +
+                ", publicado=" + publicado +
+                '}';
+    }
 }
